@@ -1,6 +1,9 @@
+body {
+  background-image: url(https://s3.amazonaws.com/shecodesio-production/uploads/files/000/069/534/original/5630974.jpg?1677671103);
+}
 .application {
   font-family: "Quicksand", sans-serif;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 8px;
   border-color: rgb(172, 171, 171);
   margin: 20px auto;
@@ -29,7 +32,6 @@ ul {
 }
 .temperature .units {
   position: relative;
-  left: -10px;
   top: -17px;
   font-size: 15px;
 }
