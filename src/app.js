@@ -1,17 +1,21 @@
 let city = "New York";
 let apiKey = "0f5f0e8d2874c9d8753ec860a7742a34";
 let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}&units=metric`;
-console.log(apiUrl);
+
 function capitalize(string) {
   return string[0].toUpperCase() + string.slice(1);
 }
 function showTemperature(response) {
   console.log(response.data);
   let temperatureData = document.querySelector("#cityTemperature");
-  temperatureData.innerHTML = Math.round(response.data.main.temp);
   let cityName = document.querySelector("#city");
-  cityName.innerHTML = response.data.name;
   let weatherDescription = document.querySelector("#description");
+  let icon = document.querySelector("#icon");
+  let iconId = response.data.weather[0].icon;
+  let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`;
+  icon.setAttribute("src", iconUrl);
+  temperatureData.innerHTML = Math.round(response.data.main.temp);
+  cityName.innerHTML = response.data.name;
   weatherDescription.innerHTML = capitalize(
     response.data.weather[0].description
   );
