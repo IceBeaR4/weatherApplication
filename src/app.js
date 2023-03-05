@@ -5,6 +5,13 @@ let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=me
 function capitalize(string) {
   return string[0].toUpperCase() + string.slice(1);
 }
+
+function search(event) {
+  event.preventDefault();
+  let cityInput = document.querySelector("#city-name");
+  document.querySelector("#city").innerHTML = cityInput.value;
+}
+
 function showTemperature(response) {
   console.log(response.data);
   let temperatureData = document.querySelector("#cityTemperature");
@@ -46,3 +53,6 @@ currentDate.innerHTML =
   ("0" + now.getHours()).slice(-2) +
   ":" +
   ("0" + now.getMinutes()).slice(-2);
+
+let searchForm = document.querySelector("#search-form");
+searchForm.addEventListener("submit", search);
