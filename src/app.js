@@ -1,6 +1,8 @@
-let city = "New York";
 let apiKey = "0f5f0e8d2874c9d8753ec860a7742a34";
-let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}&units=metric`;
+function submitForm(city) {
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+  https: axios.get(apiUrl).then(showTemperature);
+}
 
 function capitalize(string) {
   return string[0].toUpperCase() + string.slice(1);
@@ -9,7 +11,7 @@ function capitalize(string) {
 function search(event) {
   event.preventDefault();
   let cityInput = document.querySelector("#city-name");
-  document.querySelector("#city").innerHTML = cityInput.value;
+  submitForm(cityInput.value);
 }
 
 function showTemperature(response) {
@@ -33,7 +35,6 @@ function showTemperature(response) {
     response.data.wind.speed
   )}km/h`;
 }
-https: axios.get(apiUrl).then(showTemperature);
 
 let currentDate = document.querySelector("#date");
 let now = new Date();
@@ -56,3 +57,36 @@ currentDate.innerHTML =
 
 let searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", search);
+
+function showPosition(position) {
+  let lat = position.coords.latitude;
+  let lon = position.coords.longitude;
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  function currentTemp(response) {
+    let temperatureData = document.querySelector("#cityTemperature");
+    let cityName = document.querySelector("#city");
+    let weatherDescription = document.querySelector("#description");
+    let icon = document.querySelector("#icon");
+    let iconId = response.data.weather[0].icon;
+    let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`;
+    icon.setAttribute("src", iconUrl);
+    temperatureData.innerHTML = Math.round(response.data.main.temp);
+    cityName.innerHTML = response.data.name;
+    weatherDescription.innerHTML = capitalize(
+      response.data.weather[0].description
+    );
+    document.querySelector(
+      "#humidity"
+    ).innerHTML = `${response.data.main.humidity}%`;
+    document.querySelector("#wind").innerHTML = `${Math.round(
+      response.data.wind.speed
+    )}km/h`;
+  }
+  https: axios.get(apiUrl).then(currentTemp);
+}
+
+function navigation() {
+  navigator.geolocation.getCurrentPosition(showPosition);
+}
+let currentLocation = document.querySelector("#current-btn");
+currentLocation.addEventListener("click", navigation);
