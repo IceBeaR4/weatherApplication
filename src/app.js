@@ -4,6 +4,14 @@ function submitForm(city) {
   https: axios.get(apiUrl).then(showTemperature);
 }
 
+// function convertToFahrenheit(celsius) {
+//   return (celsius * 9) / 5 + 32;
+// }
+
+// function convertToCelsius(fahrenheit) {
+//   return ((fahrenheit - 32) * 5) / 9;
+// }
+
 function capitalize(string) {
   return string[0].toUpperCase() + string.slice(1);
 }
@@ -16,14 +24,15 @@ function search(event) {
 
 function showTemperature(response) {
   console.log(response.data);
-  let temperatureData = document.querySelector("#cityTemperature");
+  let celsiusTemp = document.querySelector("#cityTemperature");
   let cityName = document.querySelector("#city");
   let weatherDescription = document.querySelector("#description");
   let icon = document.querySelector("#icon");
   let iconId = response.data.weather[0].icon;
   let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`;
+  celsiusTemperature = response.data.main.temp;
   icon.setAttribute("src", iconUrl);
-  temperatureData.innerHTML = Math.round(response.data.main.temp);
+  celsiusTemp.innerHTML = Math.round(response.data.main.temp);
   cityName.innerHTML = response.data.name;
   weatherDescription.innerHTML = capitalize(
     response.data.weather[0].description
@@ -63,14 +72,15 @@ function showPosition(position) {
   let lon = position.coords.longitude;
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
   function currentTemp(response) {
-    let temperatureData = document.querySelector("#cityTemperature");
+    let celsiusTemp = document.querySelector("#cityTemperature");
     let cityName = document.querySelector("#city");
     let weatherDescription = document.querySelector("#description");
     let icon = document.querySelector("#icon");
     let iconId = response.data.weather[0].icon;
     let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`;
+    celsiusTemperature = response.data.main.temp;
     icon.setAttribute("src", iconUrl);
-    temperatureData.innerHTML = Math.round(response.data.main.temp);
+    celsiusTemp.innerHTML = Math.round(response.data.main.temp);
     cityName.innerHTML = response.data.name;
     weatherDescription.innerHTML = capitalize(
       response.data.weather[0].description
@@ -85,8 +95,33 @@ function showPosition(position) {
   https: axios.get(apiUrl).then(currentTemp);
 }
 
+function displayFahrenheit(event) {
+  event.preventDefault();
+  celsiusUnit.classList.remove("active");
+  fahrenheitUnit.classList.add("active");
+  let temperature = document.querySelector("#cityTemperature");
+  let fahrenheitTemperature = (celsiusTemperature * 9) / 5 + 32;
+  temperature.innerHTML = Math.round(fahrenheitTemperature);
+}
+
+function displayCelsius(event) {
+  event.preventDefault();
+  celsiusUnit.classList.add("active");
+  fahrenheitUnit.classList.remove("active");
+  let temperature = document.querySelector("#cityTemperature");
+  temperature.innerHTML = Math.round(celsiusTemperature);
+}
+
+let celsiusTemperature = null;
+
 function navigation() {
   navigator.geolocation.getCurrentPosition(showPosition);
 }
 let currentLocation = document.querySelector("#current-btn");
 currentLocation.addEventListener("click", navigation);
+
+let fahrenheitUnit = document.querySelector("#fahrenheit");
+fahrenheitUnit.addEventListener("click", displayFahrenheit);
+
+let celsiusUnit = document.querySelector("#celsius");
+celsiusUnit.addEventListener("click", displayCelsius);
